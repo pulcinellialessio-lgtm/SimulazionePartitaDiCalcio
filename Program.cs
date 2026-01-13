@@ -28,7 +28,7 @@ namespace SimulazionePartitaDiCalcio
 
             return sommaTitolari;
         }
-        static string eventiCasuali(int[] titolari1, int[] titolari2, int[] panchina1, int[] panchina2)
+        static string eventiCasuali(ref int[] titolari1, ref int[] titolari2, ref int[] panchina1, ref int[] panchina2, ref int[] gialloTitolari1, ref int[] gialloTitolari2)
         {
             Random rand = new Random();
             int Evento = rand.Next(0, 131);
@@ -96,6 +96,7 @@ namespace SimulazionePartitaDiCalcio
                 if (titolari1[InfortunioA] < 15)
                 {
                     titolari1[InfortunioA] = 0;
+                    Console.WriteLine("Il giocatore numero " + InfortunioA + " è infortunato");
                 }
                 else
                 {
@@ -112,6 +113,7 @@ namespace SimulazionePartitaDiCalcio
                 if (titolari2[InfortunioB] < 15)
                 {
                     titolari2[InfortunioB] = 0;
+                    Console.WriteLine("Il giocatore numero " + InfortunioB + " è infortunato");
                 }
                 else
                 {
@@ -121,18 +123,27 @@ namespace SimulazionePartitaDiCalcio
             else if(Evento > 107 && Evento <= 111)
             {
                 EventoCasuale = "Cartellino giallo squadra A";
+                cartellinoGiallo(ref titolari1, ref titolari2, ref gialloTitolari1, ref gialloTitolari2, EventoCasuale);
             }
             else if(Evento > 111 && Evento <= 115)
             {
                 EventoCasuale = "Cartellino giallo squadra B";
+                cartellinoGiallo(ref titolari1, ref titolari2, ref gialloTitolari1, ref gialloTitolari2, EventoCasuale);
+
             }
             else if(Evento > 115 && Evento <= 119)
-            {
+            { 
                 EventoCasuale = "Cartellino rosso squadra A";
+
+                int Rosso = rand.Next(0, titolari1.Length);
+                titolari1[Rosso] = 0;
             }
             else if(Evento > 119 && Evento <= 123)
             {
                 EventoCasuale = "Cartellino rosso squadra B";
+
+                int Rosso = rand.Next(0, titolari2.Length);
+                titolari2[Rosso] = 0;
             }
             else if(Evento > 123 && Evento <= 127)
             {
@@ -145,7 +156,7 @@ namespace SimulazionePartitaDiCalcio
 
              return EventoCasuale;
         }
-        static string Gol(int[] titolari1, int[] titolari2, string EventoCasuale)
+        static string Gol(ref int[] titolari1, ref int[] titolari2, string EventoCasuale)
         {
             int Gol = 0;
 
@@ -153,6 +164,37 @@ namespace SimulazionePartitaDiCalcio
             {
                 Gol = CalcoloForzaSquadra(titolari1) / (CalcoloForzaSquadra(titolari1) + CalcoloForzaSquadra(titolari2));
             }
+            else if(EventoCasuale == "Gol squadra B")
+            {
+                Gol = CalcoloForzaSquadra(titolari2) / (CalcoloForzaSquadra(titolari1) + CalcoloForzaSquadra(titolari2));
+            }
+
+            return Gol.ToString();   //???????????????????????????????????????????????????????????????????????
+        }
+        static void cartellinoGiallo(ref int[] titolari1, ref int[] titolari2, ref int[] gialloTitolari1, ref int[] gialloTitolari2, string EventoCasuale)
+        {
+            Random rand = new Random();
+
+            if (EventoCasuale == "Cartellino giallo squadra A")
+            {
+                int giallo = rand.Next(0, gialloTitolari1.Length);
+                gialloTitolari1[giallo] = gialloTitolari1[giallo] + 1;
+            }
+            else if(EventoCasuale == "Cartellino giallo squadra B")
+            {
+                int giallo = rand.Next(0, gialloTitolari2.Length);
+                gialloTitolari2[giallo] = gialloTitolari2[giallo] + 1;
+            }
+            
+        }
+        static void sostituzioni(ref int[] titolari, ref int[] panchina)
+        {
+            Random rand = new Random();
+            int esce = rand.Next(0, titolari.Length);
+            int entra = rand.Next(0, panchina.Length);
+            int temp = titolari[esce];
+            titolari[esce] = panchina[entra];
+            panchina[entra] = temp;
         }
         static void Main(string[] args)
         {
@@ -161,6 +203,9 @@ namespace SimulazionePartitaDiCalcio
 
             int[] panchina1 = new int[5];
             int[] panchina2 = new int[5];
+
+            int[] gialloTitolari1 = new int[titolari1.Length];
+            int[] gialloTitolari2 = new int[titolari2.Length];
 
             GenerazioneSquadre(titolari1);
             GenerazioneSquadre(titolari2);
