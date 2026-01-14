@@ -4,6 +4,15 @@ namespace SimulazionePartitaDiCalcio
 {
     internal class Program
     {
+        static void forzaSquadra(int[] tit)
+        {
+            Console.WriteLine("Forza squadra");
+
+            for (int i = 0; i < tit.Length; i++)
+            {
+                Console.WriteLine("Giocatore " + i + ":" + tit[i]);
+            }
+        }
         static void GenerazioneSquadre(int[] giocatori) 
         {
             Random rand = new Random();
@@ -12,7 +21,6 @@ namespace SimulazionePartitaDiCalcio
             {
                 int Forzagiocatori = rand.Next(30, 101);
                 giocatori[i] = Forzagiocatori;
-                Console.WriteLine("Forza giocatore numero " + i + ":" + Forzagiocatori);
             }
         }
         static int CalcoloForzaSquadra(int[] Giocatori)
@@ -24,8 +32,6 @@ namespace SimulazionePartitaDiCalcio
                 sommaTitolari = sommaTitolari + Giocatori[i];
             }
 
-            Console.WriteLine("la forza della squadra è: " + sommaTitolari);
-
             return sommaTitolari;
         }
         static string eventiCasuali(ref int[] titolari1, ref int[] titolari2, ref int[] panchina1, ref int[] panchina2, ref int[] gialloTitolari1, ref int[] gialloTitolari2)
@@ -35,29 +41,10 @@ namespace SimulazionePartitaDiCalcio
 
             string EventoCasuale = "";
 
-            if (Evento > 65 && Evento <= 68)
+            if (Evento > 65 && Evento <= 71)
             {
-                EventoCasuale = "Gol squadra A";
-                for (int i = 0; i < titolari1.Length; i++)
-                {
-                    titolari1[i] += 5;
-                }
-                for (int i = 0; i < panchina1.Length; i++)
-                {
-                    panchina1[i] += 5;
-                }
-            }
-            else if (Evento > 68 && Evento <= 71)
-            {
-                EventoCasuale = "Gol squadra B";
-                for (int i = 0; i < titolari2.Length; i++)
-                {
-                    titolari2[i] += 5;
-                }
-                for (int i = 0; i < panchina2.Length; i++)
-                {
-                    panchina2[i] += 5;
-                }
+                EventoCasuale = "Gol";
+                Gol(ref titolari1, ref titolari2, ref panchina1, ref panchina2, EventoCasuale);
             }
             else if (Evento <= 65)
             {
@@ -74,6 +61,8 @@ namespace SimulazionePartitaDiCalcio
                 {
                     panchina1[i] -= 3;
                 }
+
+                forzaSquadra(titolari1);
             }
             else if (Evento > 75 && Evento <= 79)
             {
@@ -86,6 +75,7 @@ namespace SimulazionePartitaDiCalcio
                 {
                     panchina2[i] -= 3;
                 }
+                forzaSquadra(titolari2);
             }
             else if (Evento > 79 && Evento <= 103)
             {
@@ -156,20 +146,39 @@ namespace SimulazionePartitaDiCalcio
 
              return EventoCasuale;
         }
-        static string Gol(ref int[] titolari1, ref int[] titolari2, string EventoCasuale)
+        static void Gol(ref int[] titolari1, ref int[] titolari2,ref int[] panchina1, ref int[] panchina2, string EventoCasuale)
         {
+            Random rand = new Random();
             int Gol = 0;
 
-            if(EventoCasuale == "Gol squadra A")
+            Gol = CalcoloForzaSquadra(titolari1) / (CalcoloForzaSquadra(titolari1) + CalcoloForzaSquadra(titolari2));
+            int probabilitàGol = rand.Next(0, 101);
+
+            if(probabilitàGol > (Gol * 10))
             {
-                Gol = CalcoloForzaSquadra(titolari1) / (CalcoloForzaSquadra(titolari1) + CalcoloForzaSquadra(titolari2));
+                Console.WriteLine("Gol segnato dalla squadra A!");
+                for (int i = 0; i < titolari1.Length; i++)
+                {
+                    titolari1[i] += 5;
+                }
+                for (int i = 0; i < panchina1.Length; i++)
+                {
+                    panchina1[i] += 5;
+                }
             }
-            else if(EventoCasuale == "Gol squadra B")
+            else
             {
-                Gol = CalcoloForzaSquadra(titolari2) / (CalcoloForzaSquadra(titolari1) + CalcoloForzaSquadra(titolari2));
+                Console.WriteLine("Gol segnato dalla squadra B!");
+                for (int i = 0; i < titolari2.Length; i++)
+                {
+                    titolari2[i] += 5;
+                }
+                for (int i = 0; i < panchina2.Length; i++)
+                {
+                    panchina2[i] += 5;
+                }
             }
 
-            return Gol.ToString();   //???????????????????????????????????????????????????????????????????????
         }
         static void cartellinoGiallo(ref int[] titolari1, ref int[] titolari2, ref int[] gialloTitolari1, ref int[] gialloTitolari2, string EventoCasuale)
         {
@@ -179,25 +188,37 @@ namespace SimulazionePartitaDiCalcio
             {
                 int giallo = rand.Next(0, gialloTitolari1.Length);
                 gialloTitolari1[giallo] = gialloTitolari1[giallo] + 1;
+                if(gialloTitolari1[giallo] == 2)
+                {
+                    titolari1[giallo] = 0;
+                    Console.WriteLine("Il giocatore numero " + giallo + " della squadra A è stato espulso per doppio cartellino giallo");
+                }
             }
             else if(EventoCasuale == "Cartellino giallo squadra B")
             {
                 int giallo = rand.Next(0, gialloTitolari2.Length);
                 gialloTitolari2[giallo] = gialloTitolari2[giallo] + 1;
+                if (gialloTitolari2[giallo] == 2)
+                {
+                    titolari2[giallo] = 0;
+                    Console.WriteLine("Il giocatore numero " + giallo + " della squadra B è stato espulso per doppio cartellino giallo");
+                }
             }
             
         }
-        static void sostituzioni(ref int[] titolari, ref int[] panchina)
+        static void sostituzioni(int[] titolari, int[] panchina, int[] sost, string eventoCasuale)
         {
             Random rand = new Random();
-            int esce = rand.Next(0, titolari.Length);
-            int entra = rand.Next(0, panchina.Length);
-            int temp = titolari[esce];
-            titolari[esce] = panchina[entra];
-            panchina[entra] = temp;
+
+            if(eventoCasuale == "Sostituzione squadra A")
+            {
+
+            }
         }
         static void Main(string[] args)
         {
+            Random rand = new Random();
+
             int[] titolari1 = new int[11];
             int[] titolari2 = new int[11];
 
@@ -207,6 +228,9 @@ namespace SimulazionePartitaDiCalcio
             int[] gialloTitolari1 = new int[titolari1.Length];
             int[] gialloTitolari2 = new int[titolari2.Length];
 
+            int[] sostituzione1 = new int[2];
+            int[] sostituzione2 = new int[2];
+
             GenerazioneSquadre(titolari1);
             GenerazioneSquadre(titolari2);
             GenerazioneSquadre(panchina1);
@@ -215,11 +239,25 @@ namespace SimulazionePartitaDiCalcio
             CalcoloForzaSquadra(titolari1);
             CalcoloForzaSquadra(titolari2);
 
-            for (int i = 0; i < 90; i++)
+            int tempo = 90;
+            int recupero = 0;
+
+            recupero = rand.Next(1, 6);
+
+            tempo = tempo + recupero;
+
+            for (int i = 0; i < tempo; i++)
             {
-                Console.WriteLine("Minuto " + (i+1) + ":" + eventiCasuali(titolari1, titolari2, panchina1, panchina2));
+                Console.WriteLine("Minuto " + (i+1) + ":" + eventiCasuali(ref titolari1, ref titolari2, ref panchina1, ref panchina2, ref gialloTitolari1, ref gialloTitolari2));
                 Console.ReadLine();
+
+                if (i == 89)
+                {
+                    Console.WriteLine("Il recupero è di " + recupero + " minuti");
+                }
             }
+
+            Console.WriteLine("Fine partita");
         }
     }
 }
