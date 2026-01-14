@@ -6,11 +6,10 @@ namespace SimulazionePartitaDiCalcio
     {
         static void forzaSquadra(int[] tit)
         {
-            Console.WriteLine("Forza squadra");
 
             for (int i = 0; i < tit.Length; i++)
             {
-                Console.WriteLine("Giocatore " + i + ":" + tit[i]);
+                Console.WriteLine("Giocatore " + (i+1) + ":" + tit[i]);
             }
         }
         static void GenerazioneSquadre(int[] giocatori) 
@@ -34,10 +33,12 @@ namespace SimulazionePartitaDiCalcio
 
             return sommaTitolari;
         }
-        static string eventiCasuali(ref int[] titolari1, ref int[] titolari2, ref int[] panchina1, ref int[] panchina2, ref int[] gialloTitolari1, ref int[] gialloTitolari2)
+        static string eventiCasuali(ref int[] titolari1, ref int[] titolari2, ref int[] panchina1, ref int[] panchina2, ref int[] gialloTitolari1, ref int[] gialloTitolari2, ref int[] sostituzione1, ref int[] sostituzione2)
         {
             Random rand = new Random();
             int Evento = rand.Next(0, 131);
+
+            int LimiteA = 0, LimiteB = 0;
 
             string EventoCasuale = "";
 
@@ -45,6 +46,13 @@ namespace SimulazionePartitaDiCalcio
             {
                 EventoCasuale = "Gol";
                 Gol(ref titolari1, ref titolari2, ref panchina1, ref panchina2, EventoCasuale);
+
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
+
             }
             else if (Evento <= 65)
             {
@@ -55,70 +63,133 @@ namespace SimulazionePartitaDiCalcio
                 EventoCasuale = "Calo fisico squadra A";
                 for (int i = 0; i < titolari1.Length; i++)
                 {
-                    titolari1[i] -= 3;
+                    if(titolari1[i] > 3)
+                    {
+                        titolari1[i] -= 3;
+                    }
+                    else
+                    {
+                        titolari1[i] = 0;
+                    }
                 }
                 for (int i = 0; i < panchina1.Length; i++)
                 {
-                    panchina1[i] -= 3;
+                    if(panchina1[i] > 3)
+                    {
+                        panchina1[i] -= 3;
+                    }
+                    else
+                    {
+                        panchina1[i] = 0;
+                    }
                 }
 
+                Console.WriteLine("Forza squadra A:");
                 forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
             }
             else if (Evento > 75 && Evento <= 79)
             {
                 EventoCasuale = "Calo fisico squadra B";
                 for (int i = 0; i < titolari2.Length; i++)
                 {
-                    titolari2[i] -= 3;
+                    if(titolari2[i] > 3)
+                    {
+                        titolari2[i] -= 3;
+                    }
+                    else
+                    {
+                        titolari2[i] = 0;
+                    }
                 }
                 for (int i = 0; i < panchina2.Length; i++)
                 {
-                    panchina2[i] -= 3;
+                    if(panchina2[i] > 3)
+                    {
+                        panchina2[i] -= 3;
+                    }
+                    else
+                    {
+                        panchina2[i] = 0;
+                    }
                 }
+
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
                 forzaSquadra(titolari2);
             }
             else if (Evento > 79 && Evento <= 103)
             {
-                EventoCasuale = "Infortunio giocatore squadra A";
-
                 int InfortunioA = rand.Next(0, titolari1.Length);
+
+                EventoCasuale = "Infortunio giocatore squadra A";
 
                 if (titolari1[InfortunioA] < 15)
                 {
                     titolari1[InfortunioA] = 0;
-                    Console.WriteLine("Il giocatore numero " + InfortunioA + " è infortunato");
+                    Console.WriteLine("Il giocatore numero " + (InfortunioA + 1) + " è infortunato");
                 }
                 else
                 {
                     titolari1[InfortunioA] = titolari1[InfortunioA] - 15;
+                    Console.WriteLine("Il giocatore numero " + (InfortunioA + 1) + " è infortunato");
+
                 }
 
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
             }
             else if (Evento > 103 && Evento <= 107)
             {
-                EventoCasuale = "Infortunio giocatore squadra B";
-
                 int InfortunioB = rand.Next(0, titolari2.Length);
+
+                EventoCasuale = "Infortunio giocatore squadra B";
 
                 if (titolari2[InfortunioB] < 15)
                 {
                     titolari2[InfortunioB] = 0;
-                    Console.WriteLine("Il giocatore numero " + InfortunioB + " è infortunato");
+                    Console.WriteLine("Il giocatore numero " + (InfortunioB + 1) + " è infortunato");
                 }
                 else
                 {
                     titolari2[InfortunioB] = titolari2[InfortunioB] - 15;
+                    Console.WriteLine("Il giocatore numero " + (InfortunioB + 1) + " è infortunato");
                 }
+                
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
             }
             else if(Evento > 107 && Evento <= 111)
             {
                 EventoCasuale = "Cartellino giallo squadra A";
                 cartellinoGiallo(ref titolari1, ref titolari2, ref gialloTitolari1, ref gialloTitolari2, EventoCasuale);
+
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
             }
             else if(Evento > 111 && Evento <= 115)
             {
                 EventoCasuale = "Cartellino giallo squadra B";
                 cartellinoGiallo(ref titolari1, ref titolari2, ref gialloTitolari1, ref gialloTitolari2, EventoCasuale);
+
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
 
             }
             else if(Evento > 115 && Evento <= 119)
@@ -127,6 +198,12 @@ namespace SimulazionePartitaDiCalcio
 
                 int Rosso = rand.Next(0, titolari1.Length);
                 titolari1[Rosso] = 0;
+
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
             }
             else if(Evento > 119 && Evento <= 123)
             {
@@ -134,19 +211,41 @@ namespace SimulazionePartitaDiCalcio
 
                 int Rosso = rand.Next(0, titolari2.Length);
                 titolari2[Rosso] = 0;
+
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
             }
             else if(Evento > 123 && Evento <= 127)
             {
+                LimiteA++;
                 EventoCasuale = "Sostituzione squadra A";
+                sostituzioni(titolari1, panchina1, sostituzione1, EventoCasuale, LimiteA);
+
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
             }
             else if(Evento > 127 && Evento <= 130)
             {
+                LimiteB++;
                 EventoCasuale = "Sostituzione squadra B";
+                sostituzioni(titolari2, panchina2, sostituzione2, EventoCasuale, LimiteB);
+
+                Console.WriteLine("Forza squadra A:");
+                forzaSquadra(titolari1);
+
+                Console.WriteLine("Forza squadra B:");
+                forzaSquadra(titolari2);
             }
 
              return EventoCasuale;
         }
-        static void Gol(ref int[] titolari1, ref int[] titolari2,ref int[] panchina1, ref int[] panchina2, string EventoCasuale)
+        static string Gol(ref int[] titolari1, ref int[] titolari2,ref int[] panchina1, ref int[] panchina2, string EventoCasuale)
         {
             Random rand = new Random();
             int Gol = 0;
@@ -165,6 +264,9 @@ namespace SimulazionePartitaDiCalcio
                 {
                     panchina1[i] += 5;
                 }
+
+                string risultato = "Gol squadra A";
+                return risultato;
             }
             else
             {
@@ -177,10 +279,13 @@ namespace SimulazionePartitaDiCalcio
                 {
                     panchina2[i] += 5;
                 }
+
+                string risultato = "Gol squadra B";
+                return risultato;
             }
 
         }
-        static void cartellinoGiallo(ref int[] titolari1, ref int[] titolari2, ref int[] gialloTitolari1, ref int[] gialloTitolari2, string EventoCasuale)
+        static string cartellinoGiallo(ref int[] titolari1, ref int[] titolari2, ref int[] gialloTitolari1, ref int[] gialloTitolari2, string EventoCasuale)
         {
             Random rand = new Random();
 
@@ -193,8 +298,11 @@ namespace SimulazionePartitaDiCalcio
                     titolari1[giallo] = 0;
                     Console.WriteLine("Il giocatore numero " + giallo + " della squadra A è stato espulso per doppio cartellino giallo");
                 }
+
+                string Giallo = "Cartellino giallo squadra A";
+                return Giallo;
             }
-            else if(EventoCasuale == "Cartellino giallo squadra B")
+            else
             {
                 int giallo = rand.Next(0, gialloTitolari2.Length);
                 gialloTitolari2[giallo] = gialloTitolari2[giallo] + 1;
@@ -203,17 +311,103 @@ namespace SimulazionePartitaDiCalcio
                     titolari2[giallo] = 0;
                     Console.WriteLine("Il giocatore numero " + giallo + " della squadra B è stato espulso per doppio cartellino giallo");
                 }
+
+                string Giallo = "Cartellino giallo squadra B";
+                return Giallo; 
             }
-            
         }
-        static void sostituzioni(int[] titolari, int[] panchina, int[] sost, string eventoCasuale)
+        static void sostituzioni(int[] titolari, int[] panchina, int[] sost, string eventoCasuale, int Limite)
         {
             Random rand = new Random();
 
-            if(eventoCasuale == "Sostituzione squadra A")
-            {
+            int max = 0, min = 10000, l = 0, s = 0;
 
+            if(Limite <= 5)
+            {
+                for(int i = 0; i < panchina.Length; i++)
+                {
+                    if(max < panchina[i])
+                    {
+                        max = panchina[i];
+                        l = i;
+                    }
+                }
+
+                sost[0] = max;
+                panchina[l] = 0;
+
+                for(int j = 0; j < titolari.Length; j++)
+                {
+                    if(min > titolari[j])
+                    {
+                        min = titolari[j];
+                        s = j;  
+                    }
+                }
+
+                panchina[l] = titolari[s];
+                titolari[s] = 0;
+                titolari[s] = sost[0];
             }
+            else
+            {
+                Console.WriteLine("Limite sostituzioni raggiunto");
+            }
+        }
+        static void statistiche(string EventoCasuale, string risultato, string Giallo, ref int[] titolari1, ref int[] titolari2)
+        {
+            int GolA = 0, GolB = 0, rossiA = 0, rossiB = 0, gialloA = 0, gialloB = 0, sosA = 0, sosB = 0, infA = 0, infB = 0;
+
+            if (risultato == "Gol squadra A")
+            {
+                GolA++;
+            }
+            else if (risultato == "Gol squadra B")
+            {
+                GolB++;
+            }
+            else if (EventoCasuale == "Cartellino rosso squadra A")
+            {
+                rossiA++;
+            }
+            else if (EventoCasuale == "Cartellino rosso squadra B")
+            {
+                rossiB++;
+            }
+            else if(Giallo == "Cartellino giallo squadra A")
+            {
+                gialloA++;
+            }
+            else if(Giallo == "Cartellino giallo squadra B")
+            {
+                gialloB++;
+            }
+            else if(EventoCasuale == "Sostituzione squadra A")
+            {
+                sosA++;
+            }
+            else if(EventoCasuale == "Sostituzione squadra B")
+            {
+                sosB++;
+            }
+            else if(EventoCasuale == "Infortunio giocatore squadra A")
+            {
+                infA++;
+            }
+            else if(EventoCasuale == "Infortunio giocatore squadra B")
+            {
+                infB++;
+            }
+
+            Console.WriteLine("---------------------------------------------------------------");
+            Console.WriteLine("|                         Squadra A           Squadra B       |");
+            Console.WriteLine("|  Gol:                  " + GolA + "        " + GolB + "     |");
+            Console.WriteLine("|  Cartellini gialli:    " + gialloA + "     " + gialloB + "  |");
+            Console.WriteLine("|  Cartellini rossi:     " + rossiA + "      " + rossiB + "   |");
+            Console.WriteLine("|  Sostituzioni:         " + sosA + "        " + sosB + "     |");
+            Console.WriteLine("|  Infortuni:            " + infA + "        " + infB + "     |");
+            Console.WriteLine("|  Potenza finale:       " + CalcoloForzaSquadra(titolari1) + " " + CalcoloForzaSquadra(titolari2) + " |");
+            Console.WriteLine("---------------------------------------------------------------");
         }
         static void Main(string[] args)
         {
@@ -248,7 +442,7 @@ namespace SimulazionePartitaDiCalcio
 
             for (int i = 0; i < tempo; i++)
             {
-                Console.WriteLine("Minuto " + (i+1) + ":" + eventiCasuali(ref titolari1, ref titolari2, ref panchina1, ref panchina2, ref gialloTitolari1, ref gialloTitolari2));
+                Console.WriteLine("Minuto " + (i + 1) + ":" + eventiCasuali(ref titolari1, ref titolari2, ref panchina1, ref panchina2, ref gialloTitolari1, ref gialloTitolari2, ref sostituzione1, ref sostituzione2));
                 Console.ReadLine();
 
                 if (i == 89)
@@ -259,5 +453,6 @@ namespace SimulazionePartitaDiCalcio
 
             Console.WriteLine("Fine partita");
         }
+        
     }
 }
